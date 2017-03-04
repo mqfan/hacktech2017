@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-docs-samples-vision",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google Inc.",
+  "scripts": {
+    "test": "cd ..; npm run st -- --verbose vision/system-test/*.test.js"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "0.7.0",
+    "@google-cloud/vision": "0.8.0",
+    "async": "2.1.4",
+    "natural": "0.4.0",
+    "redis": "2.6.5",
+    "yargs": "6.6.0"
+  },
+  "optionalDependencies": {
+    "canvas": "1.6.2"
+  },
+  "engines": {
+    "node": ">=4.3.2"
+  }
+}
