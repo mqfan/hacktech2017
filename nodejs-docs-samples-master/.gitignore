@@ -1,9 +1,0 @@
-**/node_modules/**
-npm-debug.log
-coverage/
-
-dump.rdb
-logs/
-*.iml
-.idea/
-.nyc_output
