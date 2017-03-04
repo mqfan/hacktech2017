@@ -64,23 +64,25 @@ node tasks <command>
 */
 
 // [START add_entity]
-function addTask (name, age, gender) {
+function addTask (input) {
+
+  var dataCols = input.slice(2)
   const taskKey = datastore.key('user_data');
   const entity = {
     key: taskKey,
     data: [
       {
         name: 'name',
-        value: name,
+        value: input[0],
         excludeFromIndexes: true
       },
       {
         name: 'age',
-        value: age
+        value: input[1]
       },
       {
         name: 'gender',
-        value: gender
+        value: input[2]
       }
     ]
   };
