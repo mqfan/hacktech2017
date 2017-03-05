@@ -23,6 +23,10 @@ const crypto = require('crypto');
 const app = express();
 app.enable('trust proxy');
 
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+io.on('connection', function(){ /* … */ });
+
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
@@ -88,7 +92,7 @@ app.get('/', (req, res, next) => {
 
 // [START listen]
 const PORT = process.env.PORT || 8080;
-app.listen(process.env.PORT || 8080, () => {
+server.listen(process.env.PORT || 8080, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
