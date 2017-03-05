@@ -221,4 +221,4 @@ server.listen(process.env.PORT || 8080, () => {
 // [END listen]
 // [END app]
 
-module.exports = app;
+module.exports = server;
