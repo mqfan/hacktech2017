@@ -185,6 +185,10 @@ app.use('/static', express.static(__dirname + '/website'));
 
 var io = require('socket.io')(server);
 
+// io.set('transports', [
+//   'xhr-polling'
+// ]);
+
 // Chatroom
 
 var numUsers = 0;
