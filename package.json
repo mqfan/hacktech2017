@@ -1,10 +1,10 @@
 {
-  "name": "appengine-datastore",
-  "description": "Sample for Google Cloud Datastore on Google App Engine",
+  "name": "user-data-datastore-controller",
+  "description": "used to manipulate data entries regarding user unfo",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",
-  "author": "Google Inc.",
+  "author": "Michael Fan",
   "engines": {
     "node": ">=4.3.2"
   },
