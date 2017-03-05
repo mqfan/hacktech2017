@@ -23,6 +23,9 @@ const crypto = require('crypto');
 const app = express();
 app.enable('trust proxy');
 
+var server = require('http').createServer(app);
+
+
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
 // the project specified by the GCLOUD_PROJECT environment variable. See
@@ -48,6 +51,42 @@ function insertVisit (visit) {
 }
 // [END insertVisit]
 
+function createNewPerson(username, age, gender, description, pictureUrl) {
+    const taskKey = datastore.key('user_data');
+    const entity = {
+        key: taskKey,
+        data: [
+            {
+                name: 'name',
+                value: username
+            },
+            {
+                name: 'age',
+                value: age
+            },
+            {
+                name: 'gender',
+                value: gender
+            },
+            {
+                name: 'description',
+                value: description
+            },
+            {
+                name: 'picture',
+                value: pictureUrl
+            }
+        ]
+    };
+
+    return datastore.save(entity)
+    .then(() => {
+      console.log(`Task ${taskKey.id} created successfully.`);
+      return taskKey;
+    });
+}
+
+
 // [START getVisits]
 /**
  * Retrieve the latest 10 visit records from the database.
@@ -66,6 +105,14 @@ function getVisits () {
 // [END getVisits]
 
 app.get('/', (req, res, next) => {
+  var username = "Sam I Am";
+  var age = 35;
+  var gender = "female";
+  var description = "Hi! My name is Sam. kmskmskmskmskmskmskmskmskmskmskmskms";
+  var pictureUrl = "/fakepath/";
+
+  createNewPerson(username, age, gender, description, pictureUrl)
+
   // Create a visit record to be stored in the database
   const visit = {
     timestamp: new Date(),
@@ -84,15 +131,94 @@ app.get('/', (req, res, next) => {
         .end();
     })
     .catch(next);
+
+
 });
+
+app.use('/static', express.static(__dirname + '/website'));
+
+
+var io = require('socket.io')(server);
+
+// Chatroom
+
+var numUsers = 0;
+
+io.on('connection', function (socket) {
+  var addedUser = false;
+
+  // when the client emits 'new message', this listens and executes
+  socket.on('new message', function (data) {
+    // we tell the client to execute 'new message'
+    socket.broadcast.emit('new message', {
+      username: socket.username,
+      message: data
+    });
+  });
+
+  // when the client emits 'add user', this listens and executes
+  socket.on('add user', function (username) {
+    if (addedUser) return;
+
+    // we store the username in the socket session for this client
+    socket.username = username;
+    ++numUsers;
+    addedUser = true;
+    socket.emit('login', {
+      numUsers: numUsers
+    });
+    // echo globally (all clients) that a person has connected
+    socket.broadcast.emit('user joined', {
+      username: socket.username,
+      numUsers: numUsers
+    });
+  });
+
+  // when the client emits 'typing', we broadcast it to others
+  socket.on('typing', function () {
+    socket.broadcast.emit('typing', {
+      username: socket.username
+    });
+  });
+
+  // when the client emits 'stop typing', we broadcast it to others
+  socket.on('stop typing', function () {
+    socket.broadcast.emit('stop typing', {
+      username: socket.username
+    });
+  });
+
+  // when the user disconnects.. perform this
+  socket.on('disconnect', function () {
+    if (addedUser) {
+      --numUsers;
+
+      // echo globally that this client has left
+      socket.broadcast.emit('user left', {
+        username: socket.username,
+        numUsers: numUsers
+      });
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
 
 // [START listen]
 const PORT = process.env.PORT || 8080;
-app.listen(process.env.PORT || 8080, () => {
+server.listen(process.env.PORT || 8080, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 // [END listen]
 // [END app]
 
-module.exports = app;
+module.exports = server;
