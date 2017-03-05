@@ -152,7 +152,16 @@ app.get('/', (req, res, next) => {
   var pictureUrl = "/fakepath/";
 
   createNewPerson(username, age, gender, description, location, pictureUrl);
-  queryPeopleByName("Sam I Am");
+  queryPeopleByName("Sam I Am")    // Query the last 10 visits from Datastore.
+    .then((results) => {
+      res
+        .status(200)
+        .set('Content-Type', 'text/plain')
+        .send(`Last 10 visits:\n${JSON.stringify(results)}`)
+        .end();
+    })
+    .catch(next);
+
   queryPeopleByLocation({
         "latitude": 5,
         "longitude": 5
