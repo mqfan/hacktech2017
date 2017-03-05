@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
 import LoginScreen from './login.js';
 import CreateProfile from './createprofile.js';
 import Dashboard from './dashboard.js';
 import TextField from 'material-ui/TextField';
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 
 class ApplicationContainer extends Component {
     constructor(props) {
@@ -13,12 +14,16 @@ class ApplicationContainer extends Component {
         this.state = {
             loggedIn: false,
             createdProfile: false,
-            data: []
+            data: [],
+            drawerOpen: false
         };
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleProfile = this.handleProfile.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
+        this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     }
+
+    handleDrawerToggle = (e) => this.setState({drawerOpen: !this.state.drawerOpen});
 
     handleLoginClick() {
         this.setState({loggedIn: true});
@@ -42,15 +47,17 @@ class ApplicationContainer extends Component {
         if (createdProfile) {
             console.log(this.state.username);
             return(
-                <div className="app-container">
-                    <AppBar title="Name" className="app-bar"/>
                     <Dashboard state={this.state} onClick={this.handleLogout} />
-                </div>
+
                 );
         } else if (loggedIn) {
             return(
                 <div className="app-container">
-                    <AppBar title="Name" className="app-bar"/>
+                    <AppBar title="Name" className="app-bar"
+                    onLeftIconButtonTouchTap={this.handleDrawerToggle}/>
+                    <Drawer open={this.state.drawerOpen} openSecondary={true}>
+                      <MenuItem>Log Out</MenuItem>
+                    </Drawer>
                     <div className="welcome-page">
                         <UserGreeting name={this.state.username}/>
                         <ProfileCreation onClick={this.handleProfile} />
@@ -60,7 +67,11 @@ class ApplicationContainer extends Component {
         } else {
             return(
                 <div className="app-container">
-                    <AppBar title="Name" className="app-bar"/>
+                    <AppBar title="Name" className="app-bar"
+                    onLeftIconButtonTouchTap={this.handleDrawerToggle}/>
+                    <Drawer open={this.state.drawerOpen} openSecondary={true}>
+                      <MenuItem>Log In</MenuItem>
+                    </Drawer>
                     <div className="welcome-page">
                         <GuestGreeting />
                         <LoginButton parent={this} onClick={this.handleLoginClick}/>
@@ -102,14 +113,18 @@ class LoginButton extends Component{
     render() {
           return (
             <div>
+            <div>
             <TextField type="text"
             label="username"
             placeholder="User Name"
             value={this.parent.state.username}
             onChange={this.handleUsername}/>
+            </div>
+            <div>
             <RaisedButton onClick={this.onClick}>
               Login
             </RaisedButton>
+            </div>
             </div>
           );
       }

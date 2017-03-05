@@ -1,7 +1,9 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: #ddeaff;
   font-family: roboto, sans-serif;
+  overflow: hidden;
 }
 
 #root {
@@ -27,9 +29,17 @@ body {
 }
 
 .dashboard-container {
-    display: block;
     text-align: center;
+    display: block;
     font-family: roboto, san-serif;
     padding: 10px;
 }
 
+.app-bar {
+    border-radius: 25px;
+}
+
+h1 {
+    font-family: roboto, sans-serif;
+    font-size: 45px;
+}
