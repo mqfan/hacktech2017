@@ -1,0 +1,11 @@
+indexes:
+
+- kind: user_data
+  properties:
+  - name: name
+  - name: age
+    direction: desc
+  - name: description
+  - name: gender
+  - name: picture
+  - name: location

@@ -100,7 +100,7 @@ function queryPeopleByName(username) {
     return datastore.runQuery(query)
         .then((results) => {
                   const entities = results[0];
-                  const names = entities.map((entity) => entity[datastore.KEY].name);
+                  const names = entities.map((entity) => entity.name);
 
                   console.log('Names:');
                   names.forEach((name) => console.log(name));
@@ -113,11 +113,12 @@ function queryPeopleByLocation(location) {
     const query = datastore.createQuery('user_data');
     return datastore.runQuery(query)
         .then((results) => {
+                console.log(results);
               const entities = results[0];
-              const positions = entities.map((entity) => entity[datastore.KEY].location);
+              const positions = entities.map((entity) => entity.location);
 
               console.log('Location:');
-              positions.forEach((position) => console.log(position));
+              positions.forEach((position) => console.log(position.latitude));
 
               return positions;
             });
@@ -148,7 +149,7 @@ app.get('/', (req, res, next) => {
   var location = {
         "latitude": 5,
         "longitude": 5
-    } 
+    }; 
   var pictureUrl = "/fakepath/";
 
   createNewPerson(username, age, gender, description, location, pictureUrl);
@@ -156,8 +157,8 @@ app.get('/', (req, res, next) => {
     .then((results) => {
       res
         .status(200)
-        .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${JSON.stringify(results)}`)
+        .set('Content-Type', 'application/json')
+        .send(`user data:\n${JSON.stringify(results)}`)
         .end();
     })
     .catch(next);
@@ -167,24 +168,24 @@ app.get('/', (req, res, next) => {
         "longitude": 5
     });
 
-  // Create a visit record to be stored in the database
-  const visit = {
-    timestamp: new Date(),
-    // Store a hash of the visitor's ip address
-    userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
-  };
+  // // Create a visit record to be stored in the database
+  // const visit = {
+  //   timestamp: new Date(),
+  //   // Store a hash of the visitor's ip address
+  //   userIp: crypto.createHash('sha256').update(req.ip).digest('hex').substr(0, 7)
+  // };
 
-  insertVisit(visit)
-    // Query the last 10 visits from Datastore.
-    .then(() => getVisits())
-    .then((visits) => {
-      res
-        .status(200)
-        .set('Content-Type', 'text/plain')
-        .send(`Last 10 visits:\n${visits.join('\n')}`)
-        .end();
-    })
-    .catch(next);
+  // insertVisit(visit)
+  //   // Query the last 10 visits from Datastore.
+  //   .then(() => getVisits())
+  //   .then((visits) => {
+  //     res
+  //       .status(200)
+  //       .set('Content-Type', 'text/plain')
+  //       .send(`Last 10 visits:\n${visits.join('\n')}`)
+  //       .end();
+  //   })
+  //   .catch(next);
 
 
 });
