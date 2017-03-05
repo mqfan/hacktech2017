@@ -135,7 +135,7 @@ app.get('/', (req, res, next) => {
 
 });
 
-app.use(express.static(__dirname + '/website'));
+app.use('/static', express.static(__dirname + '/website'));
 
 
 var io = require('socket.io')(server);
