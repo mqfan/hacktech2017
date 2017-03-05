@@ -106,6 +106,14 @@ function getVisits () {
 // [END getVisits]
 
 app.get('/', (req, res, next) => {
+  var username = "Sam I Am";
+  var age = 35;
+  var gender = "female";
+  var description = "Hi! My name is Sam. kmskmskmskmskmskmskmskmskmskmskmskms";
+  var pictureUrl = "/fakepath/";
+
+  createNewPerson(username, age, gender, description, pictureUrl)
+
   // Create a visit record to be stored in the database
   const visit = {
     timestamp: new Date(),
@@ -125,13 +133,7 @@ app.get('/', (req, res, next) => {
     })
     .catch(next);
 
-    var username = "Sam I Am";
-    var age = 35;
-    var gender = "female";
-    var description = "Hi! My name is Sam. kmskmskmskmskmskmskmskmskmskmskmskms";
-    var pictureUrl = "/fakepath/";
 
-    createNewPerson(username, age, gender, description, pictureUrl)
 });
 
 // [START listen]
