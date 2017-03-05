@@ -138,11 +138,11 @@ app.get('/', (req, res, next) => {
 app.use('/static', express.static(__dirname + '/website'));
 
 
-var io = require('socket.io')(server);
+var io = require('socket.io')({'transports': ['xhr-polling']})(server);
 
-io.set('transports', [
-  'xhr-polling'
-]);
+// io.set('transports', [
+//   'xhr-polling'
+// ]);
 
 // Chatroom
 
