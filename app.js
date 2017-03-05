@@ -33,6 +33,7 @@ var server = require('http').createServer(app);
 // These environment variables are set automatically on Google App Engine
 const Datastore = require('@google-cloud/datastore');
 
+
 // Instantiate a datastore client
 const datastore = Datastore();
 // [END setup]
@@ -51,7 +52,7 @@ function insertVisit (visit) {
 }
 // [END insertVisit]
 
-function createNewPerson(username, age, gender, description, pictureUrl) {
+function createNewPerson(username, age, gender, description, location, pictureUrl) {
     const taskKey = datastore.key('user_data');
     const entity = {
         key: taskKey,
@@ -73,6 +74,10 @@ function createNewPerson(username, age, gender, description, pictureUrl) {
                 value: description
             },
             {
+                name: 'location',
+                value: location
+            },
+            {
                 name: 'picture',
                 value: pictureUrl
             }
@@ -86,6 +91,37 @@ function createNewPerson(username, age, gender, description, pictureUrl) {
     });
 }
 
+function queryPeopleByName(username) {
+    const query = datastore.createQuery('user_data')
+        .filter('name', '=', username)
+        .order('age', {
+            descending: true
+        });
+    return datastore.runQuery(query)
+        .then((results) => {
+                  const entities = results[0];
+                  const names = entities.map((entity) => entity[datastore.KEY].name);
+
+                  console.log('Names:');
+                  names.forEach((name) => console.log(name));
+
+                  return names;
+                });
+}
+
+function queryPeopleByLocation(location) {
+    const query = datastore.createQuery('user_data');
+    return datastore.runQuery(query)
+        .then((results) => {
+              const entities = results[0];
+              const positions = entities.map((entity) => entity[datastore.KEY].location);
+
+              console.log('Location:');
+              positions.forEach((position) => console.log(position));
+
+              return positions;
+            });
+}
 
 // [START getVisits]
 /**
@@ -109,9 +145,18 @@ app.get('/', (req, res, next) => {
   var age = 35;
   var gender = "female";
   var description = "Hi! My name is Sam. kmskmskmskmskmskmskmskmskmskmskmskms";
+  var location = {
+        "latitude": 5,
+        "longitude": 5
+    } 
   var pictureUrl = "/fakepath/";
 
-  createNewPerson(username, age, gender, description, pictureUrl)
+  createNewPerson(username, age, gender, description, location, pictureUrl);
+  queryPeopleByName("Sam I Am");
+  queryPeopleByLocation({
+        "latitude": 5,
+        "longitude": 5
+    });
 
   // Create a visit record to be stored in the database
   const visit = {
