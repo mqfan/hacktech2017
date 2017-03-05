@@ -51,6 +51,42 @@ function insertVisit (visit) {
 }
 // [END insertVisit]
 
+function createNewPerson(username, age, gender, description, pictureUrl) {
+    const taskKey = datastore.key('user_data');
+    const entity = {
+        key: taskKey,
+        data: [
+            {
+                name: 'name',
+                value: username
+            },
+            {
+                name: 'age',
+                value: age
+            },
+            {
+                name: 'gender',
+                value: gender
+            },
+            {
+                name: 'description',
+                value: description
+            },
+            {
+                name: 'picture',
+                value: pictureUrl
+            }
+        ]
+    };
+
+    return datastore.save(entity)
+    .then(() => {
+      console.log(`Task ${taskKey.id} created successfully.`);
+      return taskKey;
+    });
+}
+
+
 // [START getVisits]
 /**
  * Retrieve the latest 10 visit records from the database.
@@ -69,6 +105,14 @@ function getVisits () {
 // [END getVisits]
 
 app.get('/', (req, res, next) => {
+  var username = "Sam I Am";
+  var age = 35;
+  var gender = "female";
+  var description = "Hi! My name is Sam. kmskmskmskmskmskmskmskmskmskmskmskms";
+  var pictureUrl = "/fakepath/";
+
+  createNewPerson(username, age, gender, description, pictureUrl)
+
   // Create a visit record to be stored in the database
   const visit = {
     timestamp: new Date(),
@@ -87,6 +131,8 @@ app.get('/', (req, res, next) => {
         .end();
     })
     .catch(next);
+
+
 });
 
 app.use(express.static(__dirname + '/website'));
