@@ -138,7 +138,7 @@ app.get('/', (req, res, next) => {
 app.use('/static', express.static(__dirname + '/website'));
 
 
-var io = require('socket.io')({'transports': ['xhr-polling']})(server);
+var io = require('socket.io')(server);
 
 // io.set('transports', [
 //   'xhr-polling'
