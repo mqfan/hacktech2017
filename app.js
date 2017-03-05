@@ -100,7 +100,7 @@ function queryPeopleByName(username) {
     return datastore.runQuery(query)
         .then((results) => {
                   const entities = results[0];
-                  const names = entities.map((entity) => entity[datastore.KEY].name);
+                  const names = entities.map((entity) => entity.name);
 
                   console.log('Names:');
                   names.forEach((name) => console.log(name));
@@ -158,7 +158,7 @@ app.get('/', (req, res, next) => {
       res
         .status(200)
         .set('Content-Type', 'application/json')
-        .send(`user data:\n${results}`)
+        .send(`user data:\n${JSON.stringify(results)}`)
         .end();
     })
     .catch(next);
